@@ -12,6 +12,7 @@ const mount = async (app: Application) => {
     typeDefs,
     resolvers,
     context: () => ({ db }),
+    introspection: true,
   });
 
   server.applyMiddleware({ app, path: "/api" });
