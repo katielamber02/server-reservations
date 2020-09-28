@@ -9,7 +9,7 @@
     "clear": "ts-node temp/clear.ts",
     "build": "tsc -p ./"
   },
-  "engine": {
+  "engines": {
     "node": "14.3.0"
   },
   "keywords": [],
