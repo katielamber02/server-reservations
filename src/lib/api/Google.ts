@@ -14,6 +14,7 @@ export const Google = {
       "https://www.googleapis.com/auth/userinfo.profile",
     ],
   }),
+
   logIn: async (code: string) => {
     const { tokens } = await auth.getToken(code);
 
