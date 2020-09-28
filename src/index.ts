@@ -19,7 +19,7 @@ const mount = async (app: Application) => {
   app.listen(process.env.PORT);
   const users = await db.users.find({}).toArray();
   console.log("[USERS]", users);
-  console.log(`[app] : http://localhost:${process.env.PORT}`);
+  console.log(`[app] : http://localhost:${process.env.PORT}` || 9000);
 };
 
 mount(express());
