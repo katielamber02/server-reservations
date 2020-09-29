@@ -1,12 +1,23 @@
 import { ObjectId } from "mongodb";
 import { IResolvers } from "apollo-server-express";
 import { Database, Listing, User } from "../../../lib/types";
-import { ListingArgs } from "./types";
+import {
+  ListingArgs,
+  ListingReservationsArgs,
+  ListingReservationsData,
+} from "./types";
 import { authorize } from "../../../lib/utils";
 import { Request } from "express";
 
 export const listingResolvers: IResolvers = {
   Query: {
+    listings: async (
+      _root: undefined,
+      _args: Record<string, unknown>,
+      { db }: { db: Database }
+    ): Promise<Listing[]> => {
+      return await db.listings.find({}).toArray();
+    },
     listing: async (
       _root: undefined,
       { id }: ListingArgs,
@@ -58,6 +69,39 @@ export const listingResolvers: IResolvers = {
         throw new Error("host can't be found");
       }
       return host;
+    },
+    reservationsIndex: (listing: Listing): string => {
+      return JSON.stringify(listing.reservationsIndex);
+    },
+    reservations: async (
+      listing: Listing,
+      { limit, page }: ListingReservationsArgs,
+      { db }: { db: Database }
+    ): Promise<ListingReservationsData | null> => {
+      try {
+        if (!listing.authorized) {
+          return null;
+        }
+
+        const data: ListingReservationsData = {
+          total: 0,
+          result: [],
+        };
+
+        let cursor = await db.reservations.find({
+          _id: { $in: listing.reservations },
+        });
+
+        cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor = cursor.limit(limit);
+
+        data.total = await cursor.count();
+        data.result = await cursor.toArray();
+
+        return data;
+      } catch (error) {
+        throw new Error(`Failed to query listing reservations: ${error}`);
+      }
     },
   },
 };

@@ -1,3 +1,8 @@
+import {
+  Reservation,
+  reservationsIndexMonth,
+  reservationsIndexYear,
+} from "./../lib/types";
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
@@ -48,6 +53,8 @@ export const typeDefs = gql`
     host: User!
     description: String!
     type: ListingType!
+    reservations(limit: Int!, page: Int!): Reservations
+    reservationsIndex: String!
   }
   type Listings {
     total: Int!

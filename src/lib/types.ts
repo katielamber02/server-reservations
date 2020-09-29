@@ -1,8 +1,8 @@
 import { Collection, ObjectId } from "mongodb";
 
 export enum ListingType {
-  Apartment = "apartment",
-  House = "house",
+  Apartment = "APARTMENT",
+  House = "HOUSE",
 }
 export interface Viewer {
   _id?: string;
