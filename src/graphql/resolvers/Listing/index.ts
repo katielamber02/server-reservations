@@ -5,19 +5,53 @@ import {
   ListingArgs,
   ListingReservationsArgs,
   ListingReservationsData,
+  ListingsData,
+  ListingsArgs,
+  ListingsFilter,
 } from "./types";
 import { authorize } from "../../../lib/utils";
 import { Request } from "express";
 
 export const listingResolvers: IResolvers = {
   Query: {
+    // listings: async (
+    //   _root: undefined,
+    //   _args: Record<string, unknown>,
+    //   { db }: { db: Database }
+    // ): Promise<Listing[]> => {
+    //   return await db.listings.find({}).toArray();
+    // },
     listings: async (
       _root: undefined,
-      _args: Record<string, unknown>,
+      { filter, limit, page }: ListingsArgs,
       { db }: { db: Database }
-    ): Promise<Listing[]> => {
-      return await db.listings.find({}).toArray();
+    ): Promise<ListingsData> => {
+      try {
+        const data: ListingsData = {
+          total: 0,
+          result: [],
+        };
+
+        let cursor = await db.listings.find({});
+
+        if (filter && filter === ListingsFilter.PRICE_HIGH_TO_LOW) {
+          cursor = cursor.sort({ price: 1 });
+        }
+        if (filter && filter === ListingsFilter.PRICE_LOW_TO_HIGH) {
+          cursor = cursor.sort({ price: -1 });
+        }
+        cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor = cursor.limit(limit);
+
+        data.total = await cursor.count();
+        data.result = await cursor.toArray();
+
+        return data;
+      } catch (error) {
+        throw new Error(`Failed to query listings: ${error}`);
+      }
     },
+
     listing: async (
       _root: undefined,
       { id }: ListingArgs,

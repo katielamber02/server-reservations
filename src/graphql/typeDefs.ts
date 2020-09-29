@@ -10,6 +10,10 @@ export const typeDefs = gql`
     APARTMENT
     HOUSE
   }
+  enum ListingsFilter {
+    PRICE_LOW_TO_HIGH
+    PRICE_HIGH_TO_LOW
+  }
   type Reservation {
     id: ID!
     listing: Listing!
@@ -62,7 +66,8 @@ export const typeDefs = gql`
   }
 
   type Query {
-    listings: [Listing!]!
+    # listings: [Listing!]!
+    listings(filter: ListingsFilter!, limit: Int!, page: Int!): Listings!
     authUrl: String!
     # user: String!
     user(id: ID!): User!

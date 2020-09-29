@@ -4,6 +4,7 @@ export enum ListingType {
   Apartment = "APARTMENT",
   House = "HOUSE",
 }
+
 export interface Viewer {
   _id?: string;
   token?: string;
