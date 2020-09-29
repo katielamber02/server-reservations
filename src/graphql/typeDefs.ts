@@ -59,6 +59,7 @@ export const typeDefs = gql`
     authUrl: String!
     # user: String!
     user(id: ID!): User!
+    listing(id: ID!): Listing!
   }
 
   type Mutation {

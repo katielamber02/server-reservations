@@ -1,15 +1,32 @@
 import { ObjectId } from "mongodb";
 import { IResolvers } from "apollo-server-express";
-import { Database, Listing } from "../../../lib/types";
+import { Database, Listing, User } from "../../../lib/types";
+import { ListingArgs } from "./types";
+import { authorize } from "../../../lib/utils";
+import { Request } from "express";
 
 export const listingResolvers: IResolvers = {
   Query: {
-    listings: async (
+    listing: async (
       _root: undefined,
-      _args: Record<string, unknown>,
-      { db }: { db: Database }
-    ): Promise<Listing[]> => {
-      return await db.listings.find({}).toArray();
+      { id }: ListingArgs,
+      { db, req }: { db: Database; req: Request }
+    ): Promise<Listing> => {
+      try {
+        const listing = await db.listings.findOne({ _id: new ObjectId(id) });
+        if (!listing) {
+          throw new Error("listing can't be found");
+        }
+
+        const viewer = await authorize(db, req);
+        if (viewer && viewer._id === listing.host) {
+          listing.authorized = true;
+        }
+
+        return listing;
+      } catch (error) {
+        throw new Error(`Failed to query listing: ${error}`);
+      }
     },
   },
   Mutation: {
@@ -31,5 +48,16 @@ export const listingResolvers: IResolvers = {
   },
   Listing: {
     id: (listing: Listing): string => listing._id.toString(),
+    host: async (
+      listing: Listing,
+      _args: Record<string, unknown>,
+      { db }: { db: Database }
+    ): Promise<User> => {
+      const host = await db.users.findOne({ _id: listing.host });
+      if (!host) {
+        throw new Error("host can't be found");
+      }
+      return host;
+    },
   },
 };

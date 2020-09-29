@@ -43,6 +43,7 @@ export interface Listing {
   reservationsIndex: reservationsIndexYear;
   price: number;
   guests: number;
+  authorized?: boolean;
 }
 
 export interface User {
