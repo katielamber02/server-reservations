@@ -1,8 +1,3 @@
-import {
-  Reservation,
-  reservationsIndexMonth,
-  reservationsIndexYear,
-} from "./../lib/types";
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
@@ -53,6 +48,8 @@ export const typeDefs = gql`
     address: String!
     price: Int!
     guests: Int!
+    country: String!
+    admin: String!
     city: String!
     host: User!
     description: String!
@@ -61,13 +58,19 @@ export const typeDefs = gql`
     reservationsIndex: String!
   }
   type Listings {
+    region: String
     total: Int!
     result: [Listing!]!
   }
 
   type Query {
     # listings: [Listing!]!
-    listings(filter: ListingsFilter!, limit: Int!, page: Int!): Listings!
+    listings(
+      location: String
+      filter: ListingsFilter!
+      limit: Int!
+      page: Int!
+    ): Listings!
     authUrl: String!
     # user: String!
     user(id: ID!): User!
