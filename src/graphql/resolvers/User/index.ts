@@ -3,6 +3,7 @@ import { UserArgs } from "./types";
 import { Database, User } from "../../../lib/types";
 import { Request } from "express";
 import { authorize } from "../../../lib/utils";
+import { UserReservationsArgs, UserReservationsData } from "./types";
 
 export const userResolvers: IResolvers = {
   Query: {
@@ -36,7 +37,36 @@ export const userResolvers: IResolvers = {
     income: (user: User): number | null => {
       return user.authorized ? user.income : null;
     },
-    reservations: (): string => "reservations",
+    reservations: async (
+      user: User,
+      { limit, page }: UserReservationsArgs,
+      { db }: { db: Database }
+    ): Promise<UserReservationsData | null> => {
+      try {
+        if (!user.authorized) {
+          return null;
+        }
+
+        const data: UserReservationsData = {
+          total: 0,
+          result: [],
+        };
+
+        let cursor = await db.reservations.find({
+          _id: { $in: user.reservations },
+        });
+
+        cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor = cursor.limit(limit);
+
+        data.total = await cursor.count();
+        data.result = await cursor.toArray();
+
+        return data;
+      } catch (error) {
+        throw new Error(`Failed to query user bookings: ${error}`);
+      }
+    },
 
     listings: (): string => "listings",
   },
