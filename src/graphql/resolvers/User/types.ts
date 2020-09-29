@@ -13,3 +13,12 @@ export interface UserReservationsData {
   total: number;
   result: Reservation[];
 }
+export interface UserListingsArgs {
+  limit: number;
+  page: number;
+}
+
+export interface UserListingsData {
+  total: number;
+  result: Listing[];
+}
