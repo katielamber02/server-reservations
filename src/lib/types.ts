@@ -55,6 +55,7 @@ export interface User {
   income: number;
   reservations: ObjectId[];
   listings: ObjectId[];
+  authorized?: boolean;
 }
 
 export interface Database {
