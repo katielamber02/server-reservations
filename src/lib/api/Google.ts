@@ -32,7 +32,7 @@ const parseAddress = (addressComponents: AddressComponent[]) => {
       city = long_name;
     }
   }
-  console.log("PARSE ADDRESS:", country, admin, city);
+  // console.log("PARSE ADDRESS:", country, admin, city);
   return { country, admin, city };
 };
 
@@ -65,8 +65,8 @@ export const Google = {
   },
 
   geocode: async (address: string) => {
-    console.log("GEO address:", address);
-    console.log("KEY", process.env.G_GEOCODE_KEY);
+    // console.log("GEO address:", address);
+    // console.log("KEY", process.env.G_GEOCODE_KEY);
     if (!process.env.G_GEOCODE_KEY) {
       throw new Error("Google Maps Api Key missing or not found");
     }
@@ -74,7 +74,7 @@ export const Google = {
       params: { address, key: process.env.G_GEOCODE_KEY },
     });
 
-    console.log("GEO RESPONSE:", res);
+    // console.log("GEO RESPONSE:", res);
     if (res.status < 200 || res.status > 299) {
       throw new Error("Failed to geocode address");
     }

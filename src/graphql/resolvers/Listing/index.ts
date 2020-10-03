@@ -38,7 +38,11 @@ export const listingResolvers: IResolvers = {
 
         if (location) {
           console.log("location", location);
-          const { country, admin, city } = await Google.geocode(location);
+          //const { country, admin, city } = await Google.geocode(location);
+          const country = "Canada";
+          const admin = "Ontario";
+          const city = "Toronto";
+
           console.log(country, admin, city);
           if (city) query.city = city;
           if (admin) query.admin = admin;

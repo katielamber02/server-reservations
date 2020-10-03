@@ -34,6 +34,9 @@ export const typeDefs = gql`
   input LogInInput {
     code: String!
   }
+  input ConnectStripeInput {
+    code: String!
+  }
   type Viewer {
     id: ID
     token: String
@@ -81,5 +84,7 @@ export const typeDefs = gql`
     deleteListing(id: ID!): Listing!
     logIn(input: LogInInput): Viewer!
     logOut: Viewer!
+    connectStripe(input: ConnectStripeInput!): Viewer!
+    disconnectStripe: Viewer!
   }
 `;
