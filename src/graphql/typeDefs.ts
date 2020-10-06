@@ -39,7 +39,7 @@ export const typeDefs = gql`
   }
   input HostListingInput {
     title: String!
-    descripttion: String!
+    description: String!
     image: String!
     type: ListingType!
     address: String!
