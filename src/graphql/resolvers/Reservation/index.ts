@@ -36,6 +36,24 @@ export const reservationResolvers: IResolvers = {
         if (checkOutDate < checkInDate) {
           throw new Error("check out date can't be before check in date");
         }
+        const reservationsIndex = resolveReservationsIndex(
+          listing.reservationsIndex,
+          checkIn,
+          checkOut
+        );
+        const totalPrice =
+          listing.price *
+          ((checkOutDate.getTime() - checkInDate.getTime()) / 86400000 + 1);
+
+        const host = await db.users.findOne({
+          _id: listing.host,
+        });
+
+        if (!host || !host.walletId) {
+          throw new Error(
+            "the host either can't be found or is not connected with Stripe"
+          );
+        }
 
         return undefined;
       } catch {}

@@ -45,7 +45,7 @@ export interface Listing {
   admin: string;
   city: string;
   reservations: ObjectId[];
-  reservationsIndex: ReservationIndexYear;
+  reservationsIndex: ReservationsIndex;
   price: number;
   guests: number;
   authorized?: boolean;
