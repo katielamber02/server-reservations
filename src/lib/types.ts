@@ -13,12 +13,16 @@ export interface Viewer {
   didRequest: boolean;
 }
 
-export interface reservationsIndexMonth {
+export interface ReservationsIndexMonth {
   [key: string]: boolean;
 }
 
-export interface reservationsIndexYear {
-  [key: string]: reservationsIndexMonth;
+export interface ReservationIndexYear {
+  [key: string]: ReservationsIndexMonth;
+}
+
+export interface ReservationsIndex {
+  [key: string]: ReservationIndexYear;
 }
 
 export interface Reservation {
@@ -41,7 +45,7 @@ export interface Listing {
   admin: string;
   city: string;
   reservations: ObjectId[];
-  reservationsIndex: reservationsIndexYear;
+  reservationsIndex: ReservationIndexYear;
   price: number;
   guests: number;
   authorized?: boolean;
