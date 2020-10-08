@@ -13,13 +13,13 @@ import { ObjectId } from "mongodb";
 import { Stripe } from "../../../lib/api/Stripe";
 
 const resolveReservationsIndex = (
-  bookingsIndex: ReservationsIndex,
+  reservationsIndex: ReservationsIndex,
   checkInDate: string,
   checkOutDate: string
 ): ReservationsIndex => {
   let dateCursor = new Date(checkInDate);
   const checkOut = new Date(checkOutDate);
-  const newReservationsIndex: ReservationsIndex = { ...bookingsIndex };
+  const newReservationsIndex: ReservationsIndex = { ...reservationsIndex };
 
   while (dateCursor <= checkOut) {
     const y = dateCursor.getUTCFullYear();
@@ -80,7 +80,7 @@ export const reservationResolvers: IResolvers = {
           throw new Error("check out date can't be before check in date");
         }
 
-        const bookingsIndex = resolveReservationsIndex(
+        const reservationsIndex = resolveReservationsIndex(
           listing.reservationsIndex,
           checkIn,
           checkOut
@@ -109,6 +109,7 @@ export const reservationResolvers: IResolvers = {
           checkIn,
           checkOut,
         });
+        console.log("INSERT RES", insertRes);
 
         const insertedReservation: Reservation = insertRes.ops[0];
 
@@ -126,7 +127,7 @@ export const reservationResolvers: IResolvers = {
             _id: viewer._id,
           },
           {
-            $push: { bookings: insertedReservation._id },
+            $push: { reservations: insertedReservation._id },
           }
         );
 
@@ -135,8 +136,8 @@ export const reservationResolvers: IResolvers = {
             _id: listing._id,
           },
           {
-            $set: { bookingsIndex },
-            $push: { bookings: insertedReservation._id },
+            $set: { reservationsIndex },
+            $push: { reservations: insertedReservation._id },
           }
         );
 
