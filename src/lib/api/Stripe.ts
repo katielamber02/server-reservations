@@ -1,4 +1,5 @@
 import stripe from "stripe";
+import { Response } from "express";
 
 const client = new stripe(`${process.env.S_SECRET_KEY}`, {
   apiVersion: "2020-08-27",
@@ -29,5 +30,13 @@ export const Stripe = {
     if (res.status !== "succeeded") {
       throw new Error("failed to create charge with Stripe");
     }
+  },
+
+  disconnect: async (stripeUserId: string) => {
+    const response = await client.oauth.deauthorize({
+      client_id: `${process.env.S_CLIENT_ID}`,
+      stripe_user_id: stripeUserId,
+    });
+    return response;
   },
 };

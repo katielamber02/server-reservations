@@ -12,6 +12,8 @@ import { authorize } from "../../../lib/utils";
 import { ObjectId } from "mongodb";
 import { Stripe } from "../../../lib/api/Stripe";
 
+const millisecondsPerDay = 86400000;
+
 const resolveReservationsIndex = (
   reservationsIndex: ReservationsIndex,
   checkInDate: string,
@@ -75,6 +77,21 @@ export const reservationResolvers: IResolvers = {
 
         const checkInDate = new Date(checkIn);
         const checkOutDate = new Date(checkOut);
+        const today = new Date();
+
+        if (checkInDate.getTime() > today.getTime() + 90 * millisecondsPerDay) {
+          throw new Error(
+            "check in date cannot be more than 90 days from today"
+          );
+        }
+        if (
+          checkOutDate.getTime() >
+          today.getTime() + 90 * millisecondsPerDay
+        ) {
+          throw new Error(
+            "check out date cannot be more than 90 days from today"
+          );
+        }
 
         if (checkOutDate < checkInDate) {
           throw new Error("check out date can't be before check in date");
